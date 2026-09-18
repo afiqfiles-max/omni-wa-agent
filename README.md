@@ -65,7 +65,7 @@ flowchart TD
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/afiq/omni-wa-agent.git
+   git clone https://github.com/afiqfiles-max/omni-wa-agent.git
    cd omni-wa-agent
    ```
 
@@ -95,7 +95,7 @@ flowchart TD
 
 #### 2. Installation
 ```bash
-git clone https://github.com/afiq/omni-wa-agent.git
+git clone https://github.com/afiqfiles-max/omni-wa-agent.git
 cd omni-wa-agent
 npm install
 ```
