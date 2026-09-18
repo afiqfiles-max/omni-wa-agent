@@ -8,6 +8,7 @@
   <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/docker-compose-blue.svg" alt="Docker Ready" /></a>
   <a href="https://trychroma.com"><img src="https://img.shields.io/badge/vectordb-ChromaDB-purple.svg" alt="VectorDB: ChromaDB" /></a>
   <a href="https://github.com/WhiskeySockets/Baileys"><img src="https://img.shields.io/badge/engine-Baileys%20WebSocket-emerald.svg" alt="Baileys WebSocket" /></a>
+  <a href="https://github.com/afiqfiles-max/omni-wa-agent/discussions/1"><img src="https://img.shields.io/badge/community-discussions-blue.svg" alt="Community Discussions" /></a>
 </p>
 
 OmniWA-Agent is a headless WhatsApp AI customer support and conversational triage runtime. Built directly on top of `@whiskeysockets/baileys` WebSockets and ChromaDB vector retrieval, it delivers deterministic context-bounded responses with a ~50MB RAM footprint without requiring headless Chromium.
