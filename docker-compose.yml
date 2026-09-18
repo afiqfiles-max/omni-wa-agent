@@ -4,11 +4,13 @@ services:
     container_name: omni-wa-agent
     restart: unless-stopped
     ports:
-      - "3001:3001"
+      - "${PORT:-3001}:3001"
     environment:
       - PORT=3001
       - CHROMA_URL=http://chromadb:8000
       - NODE_ENV=production
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     env_file:
       - .env
     volumes:
@@ -23,7 +25,7 @@ services:
     container_name: omni-wa-chromadb
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "${CHROMA_PORT:-8000}:8000"
     volumes:
       - chroma_data:/chroma/chroma
     environment:

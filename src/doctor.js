@@ -38,7 +38,12 @@ function checkConfigFiles() {
 
 async function checkChromaDB() {
   try {
-    const res = await axios.get(`${config.rag.chromaUrl.replace(/\/+$/, '')}/api/v1/heartbeat`, { timeout: 3000 });
+    let res;
+    try {
+      res = await axios.get(`${config.rag.chromaUrl.replace(/\/+$/, '')}/api/v2/heartbeat`, { timeout: 3000 });
+    } catch (e2) {
+      res = await axios.get(`${config.rag.chromaUrl.replace(/\/+$/, '')}/api/v1/heartbeat`, { timeout: 3000 });
+    }
     if (res.status === 200) {
       console.log(`[PASS] Vector DB (ChromaDB): Online at ${config.rag.chromaUrl}`);
     } else {

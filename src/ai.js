@@ -89,6 +89,7 @@ export async function generateAnswer(query, contextChunks = [], history = [], op
     const response = await client.post('/chat/completions', {
       model: config.ai.model,
       messages,
+      stream: false,
       temperature: 0.2,
       max_tokens: 800
     });
@@ -121,6 +122,7 @@ export async function callInternalLLM(promptText, opts = {}) {
       messages: [
         { role: 'user', content: promptText }
       ],
+      stream: false,
       temperature: opts.temperature || 0.1,
       max_tokens: opts.max_tokens || 100
     });

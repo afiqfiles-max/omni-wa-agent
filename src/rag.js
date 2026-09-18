@@ -13,7 +13,9 @@ function getClient() {
   if (!client) {
     const url = new URL(config.rag.chromaUrl);
     client = new ChromaClient({
-      path: `${url.protocol}//${url.hostname}:${url.port}`
+      ssl: url.protocol === 'https:',
+      host: url.hostname,
+      port: url.port ? parseInt(url.port, 10) : (url.protocol === 'https:' ? 443 : 8000)
     });
   }
   return client;

@@ -1,0 +1,7 @@
+node_modules/
+auth_info/
+.git/
+*.log
+.env
+TUNNEL_URL.txt
+unanswered_queries.json

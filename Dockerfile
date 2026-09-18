@@ -1,9 +1,6 @@
-FROM node:20-alpine AS base
+FROM node:20-slim AS base
 
 WORKDIR /app
-
-# Install dependencies needed for node-gyp or canvas if required
-RUN apk add --no-cache python3 make g++ git
 
 COPY package*.json ./
 
