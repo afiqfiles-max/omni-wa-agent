@@ -48,26 +48,26 @@ WhatsApp is a proprietary platform operated by Meta. While OmniWA-Agent minimize
 
 ```mermaid
 flowchart TD
-    User([Customer on WhatsApp]) -->|Inbound Message| WA[Baileys WebSocket Engine]
+    Inbound([Customer WhatsApp Message]) --> WA[Baileys WebSocket Engine]
     WA --> FIFO[Sequential FIFO Queue]
     FIFO --> Guard{Emergency or Crisis?}
     
-    Guard -->|Yes: Emergency| Alert[Webhook & Hotline Dispatch]
-    Alert --> Hot([Discord / Telegram / WhatsApp Supervisor])
+    Guard -->|Yes| Alert[Webhook & Hotline Dispatch]
+    Alert --> Hot([Discord / Telegram / Hotline])
     
-    Guard -->|No: Standard Query| Normalizer[Slang & Chat Normalizer]
-    Normalizer --> Chitchat{Chitchat / Greeting?}
+    Guard -->|No| Normalizer[Slang & Chat Normalizer]
+    Normalizer --> Chitchat{Chitchat?}
     Chitchat -->|Yes| Instant[Instant 0.8s Cached Response]
     
-    Chitchat -->|No: Substantive| RAG[ChromaDB Vector Retrieval]
+    Chitchat -->|No| RAG[ChromaDB Vector Retrieval]
     RAG --> Context[(Markdown Knowledge Base)]
     Context --> LLM[OpenAI-Compatible Inference]
     
     LLM --> Jitter[Gaussian Keystroke Jitter 15-25ms/char]
-    Jitter --> WA
-    WA -->|Outbound Response| User
+    Instant --> Jitter
+    Jitter --> Outbound([Outbound Delivery to WhatsApp])
 
-    subgraph Management
+    subgraph Operations Console
         Admin[Web PWA Admin Dashboard] --> Ingest[Document Re-Indexer]
         Admin --> Sandbox[Interactive Prompt Sandbox]
         Admin --> AuditLog[Unanswered Query Review]

@@ -3,8 +3,8 @@
     <style>
       .mono-title { font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace; font-size: 40px; font-weight: 700; fill: #f8fafc; letter-spacing: -0.03em; }
       .mono-sub { font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace; font-size: 15px; fill: #94a3b8; }
-      .node-text { font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace; font-size: 12px; font-weight: 600; fill: #e2e8f0; }
-      .node-sub { font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace; font-size: 10px; fill: #64748b; }
+      .node-text { font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace; font-size: 13px; font-weight: 600; fill: #f1f5f9; text-anchor: middle; }
+      .node-sub { font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace; font-size: 11px; fill: #94a3b8; text-anchor: middle; }
       .stat-val { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 20px; font-weight: 700; fill: #f8fafc; }
       .stat-lbl { font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace; font-size: 11px; fill: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
     </style>
@@ -28,63 +28,63 @@
     <text x="0" y="62" class="mono-sub">Headless WhatsApp AI agent runtime with ~50MB RAM footprint, vector RAG, and keystroke pacing.</text>
   </g>
 
-  <!-- Architecture Pipeline Diagram -->
+  <!-- Architecture Pipeline Diagram (Boxes 155px wide, centered text) -->
   <g transform="translate(60, 145)">
-    <!-- Pipeline Box 1: WebSocket -->
+    <!-- Box 1 -->
     <g transform="translate(0, 0)">
-      <rect width="145" height="64" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1" />
-      <text x="14" y="28" class="node-text">Baileys WS</text>
-      <text x="14" y="46" class="node-sub">Native Socket (~50MB)</text>
+      <rect width="155" height="64" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1" />
+      <text x="77" y="28" class="node-text">Baileys WS</text>
+      <text x="77" y="47" class="node-sub">Native WS (~50MB)</text>
     </g>
 
     <!-- Arrow 1 -->
-    <line x1="150" y1="32" x2="185" y2="32" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)" />
+    <line x1="160" y1="32" x2="185" y2="32" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)" />
 
-    <!-- Pipeline Box 2: FIFO Queue -->
+    <!-- Box 2 -->
     <g transform="translate(190, 0)">
-      <rect width="145" height="64" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1" />
-      <text x="14" y="28" class="node-text">FIFO Queue</text>
-      <text x="14" y="46" class="node-sub">Per-sender mutex</text>
+      <rect width="155" height="64" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1" />
+      <text x="77" y="28" class="node-text">FIFO Queue</text>
+      <text x="77" y="47" class="node-sub">Per-sender mutex</text>
     </g>
 
     <!-- Arrow 2 -->
-    <line x1="340" y1="32" x2="375" y2="32" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)" />
+    <line x1="350" y1="32" x2="375" y2="32" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)" />
 
-    <!-- Pipeline Box 3: Router & Normalizer -->
+    <!-- Box 3 -->
     <g transform="translate(380, 0)">
-      <rect width="150" height="64" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1" />
-      <text x="14" y="28" class="node-text">Normalizer</text>
-      <text x="14" y="46" class="node-sub">Slang expansion &amp; chitchat</text>
+      <rect width="155" height="64" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1" />
+      <text x="77" y="28" class="node-text">Normalizer</text>
+      <text x="77" y="47" class="node-sub">Slang expansion</text>
     </g>
 
     <!-- Arrow 3 -->
-    <line x1="535" y1="32" x2="570" y2="32" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)" />
+    <line x1="540" y1="32" x2="565" y2="32" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)" />
 
-    <!-- Pipeline Box 4: ChromaDB RAG -->
-    <g transform="translate(575, 0)">
-      <rect width="145" height="64" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1" />
-      <text x="14" y="28" class="node-text">ChromaDB</text>
-      <text x="14" y="46" class="node-sub">Bounded markdown RAG</text>
+    <!-- Box 4 -->
+    <g transform="translate(570, 0)">
+      <rect width="155" height="64" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1" />
+      <text x="77" y="28" class="node-text">ChromaDB</text>
+      <text x="77" y="47" class="node-sub">Vector Markdown RAG</text>
     </g>
 
     <!-- Arrow 4 -->
-    <line x1="725" y1="32" x2="760" y2="32" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)" />
+    <line x1="730" y1="32" x2="755" y2="32" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)" />
 
-    <!-- Pipeline Box 5: LLM Inference -->
-    <g transform="translate(765, 0)">
-      <rect width="145" height="64" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1" />
-      <text x="14" y="28" class="node-text">LLM Inference</text>
-      <text x="14" y="46" class="node-sub">OpenAI / Ollama / Groq</text>
+    <!-- Box 5 -->
+    <g transform="translate(760, 0)">
+      <rect width="155" height="64" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1" />
+      <text x="77" y="28" class="node-text">LLM Inference</text>
+      <text x="77" y="47" class="node-sub">Multi-Provider Engine</text>
     </g>
 
     <!-- Arrow 5 -->
-    <line x1="915" y1="32" x2="950" y2="32" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)" />
+    <line x1="920" y1="32" x2="945" y2="32" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)" />
 
-    <!-- Pipeline Box 6: Pacing Emitter -->
-    <g transform="translate(955, 0)">
-      <rect width="125" height="64" rx="6" fill="#0f172a" stroke="#10b981" stroke-width="1" />
-      <text x="14" y="28" class="node-text" fill="#34d399">Pacing Jitter</text>
-      <text x="14" y="46" class="node-sub">15–25ms/char delay</text>
+    <!-- Box 6 -->
+    <g transform="translate(950, 0)">
+      <rect width="130" height="64" rx="6" fill="#0f172a" stroke="#10b981" stroke-width="1.5" />
+      <text x="65" y="28" class="node-text" fill="#34d399">Pacing Jitter</text>
+      <text x="65" y="47" class="node-sub">15–25ms/char</text>
     </g>
   </g>
 
