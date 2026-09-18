@@ -22,7 +22,7 @@ We built OmniWA-Agent: an open-source (MIT) WhatsApp AI customer support and sal
 - Anti-ban pacing: Gaussian typing jitter (15–25ms/char) and read receipt delays simulate organic human messaging patterns.
 - Epistemic grounding: ChromaDB vector RAG strictly bounds answers to markdown/text knowledge bases. It politely refuses rather than fabricating information.
 - ITIL 4-tier escalation: Detects high-priority emergencies (fraud, ransomware, system outages, safety) and dispatches real-time alerts to WhatsApp hotlines, Discord webhooks, or Telegram bots.
-- Hardened security: Tested against 20 adversarial attack cases (DAN jailbreaks, prompt injection, Markdown SSRF, and SQLi).
+- Hardened security: Dual-layer role boundary shield (zero-latency probe intercept + strict prompt integrity) and 20 automated adversarial attack test suites.
 - 1-click deploy: Runs via Docker Compose or native Node.js >=20.
 
 Source & Docs: https://github.com/afiqfiles-max/omni-wa-agent
@@ -50,6 +50,7 @@ I built OmniWA-Agent to solve this cleanly:
 - Powered by Baileys WebSocket directly (~50MB RAM).
 - Built-in Gaussian typing jitter (15–25ms per character) to pace outgoing replies organically.
 - Local ChromaDB vector retrieval: Only answers from your Markdown files in `knowledge_base/`.
+- Dual-layer prompt defense: Pre-screens against system prompt extraction, bot tutorial probes, and role drift before hitting the LLM.
 - Multi-channel crisis escalation to Discord, Telegram, or emergency WhatsApp hotlines.
 - Includes a dark-mode PWA Admin Dashboard with live QR streaming and prompt sandbox.
 

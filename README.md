@@ -29,6 +29,7 @@ OmniWA-Agent replaces the headless browser stack with a native WebSocket engine 
 | **Session Drop Recovery**| Deletes `auth_info/` on 408/515 timeout | Socket re-attachment preserving credentials (`creds.json`) |
 | **Emergency Escalation** | None (unmonitored chat dead-end) | Webhook dispatch to Discord, Telegram, or WhatsApp hotline |
 | **Security Testing** | Manual / Untested | 20 automated adversarial test cases (DAN, SSRF, SQLi, leaks) |
+| **Role Boundary & Injection Defense** | Vulnerable to prompt jailbreaks & bot tutorial leaks | Dual-layer zero-latency smart router intercept + strict system role boundary |
 | **Slang Normalization** | Raw user text sent to LLM | Rule-based Indonesian & English shorthand expansion |
 | **Runtime Container** | >1.2 GB (Chromium + C++ dependencies) | <180 MB (`node:20-slim` Debian base) |
 
@@ -56,7 +57,11 @@ flowchart TD
     Guard -->|Yes| Alert[Webhook & Hotline Dispatch]
     Alert --> Hot([Discord / Telegram / Hotline])
     
-    Guard -->|No| Normalizer[Slang & Chat Normalizer]
+    Guard -->|No| ProbeGuard{Bot Probe / Prompt Leak?}
+    ProbeGuard -->|Yes| Refuse[Zero-Latency Scope Refusal]
+    Refuse --> Outbound([Outbound Delivery to WhatsApp])
+    
+    ProbeGuard -->|No| Normalizer[Slang & Chat Normalizer]
     Normalizer --> Chitchat{Chitchat?}
     Chitchat -->|Yes| Instant[Instant 0.8s Cached Response]
     
@@ -66,7 +71,7 @@ flowchart TD
     
     LLM --> Jitter[Gaussian Keystroke Jitter 15-25ms/char]
     Instant --> Jitter
-    Jitter --> Outbound([Outbound Delivery to WhatsApp])
+    Jitter --> Outbound
 
     subgraph Operations Console
         Admin[Web PWA Admin Dashboard] --> Ingest[Document Re-Indexer]
@@ -127,6 +132,12 @@ Scan the terminal QR code or visit `http://localhost:3001/admin` to complete Wha
 
 ## Security & Adversarial Defense
 
+### Dual-Layer Role Boundary & Bot-Probe Shield
+To prevent common attack vectors where users trick commercial WhatsApp bots into writing code, solving student homework, leaking system prompts, or giving bot-building tutorials:
+- **Layer 1 (Zero-Latency Deterministic Router):** Pre-screens incoming messages via bilingual regex (`isBotMetadataProbe`) for bot tutorial requests, system prompt extraction, or tech stack inquiries. Rejects out-of-scope requests in ~0.5ms without consuming LLM tokens.
+- **Layer 2 (Hardened System Prompt Directives):** Strict epistemic and persona boundaries embedded in `buildSystemPrompt()` across all domain presets, ensuring the LLM refuses multi-turn social engineering traps and stays bounded within customer service topics.
+
+### 20-Point Automated Adversarial Test Runner
 OmniWA-Agent includes an automated test runner verifying 20 distinct adversarial threat models and injection vectors:
 
 ```
