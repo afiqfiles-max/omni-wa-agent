@@ -53,6 +53,11 @@ export const config = {
     adminPass: process.env.ADMIN_PASS || 'admin123',
     enableTunnel: process.env.ENABLE_TUNNEL === 'true'
   },
+  escalation: {
+    webhookUrl: process.env.ESCALATION_WEBHOOK_URL || '',
+    telegramBotToken: process.env.TELEGRAM_BOT_TOKEN || '',
+    telegramChatId: process.env.TELEGRAM_CHAT_ID || ''
+  },
   tunnel: {
     enabled: process.env.ENABLE_TUNNEL === 'true'
   },

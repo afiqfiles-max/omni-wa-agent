@@ -4,7 +4,8 @@ import {
   isExplicitStaffRequest,
   canDispatchEscalation,
   recordEscalationDispatch,
-  extractOriginalIssue
+  extractOriginalIssue,
+  dispatchEscalationWebhook
 } from '../src/query-logger.js';
 
 console.log('🧪 Running Escalation & Crisis Protocol Tests...');
@@ -45,5 +46,14 @@ const historyWithGreeting = [
 ];
 const extracted = extractOriginalIssue(historyWithGreeting, 'tolong staf manusia');
 assert.ok(extracted.includes('Akun saya terkunci'), 'Failed to extract root issue from conversation history');
+
+// 8. Test Webhook dispatch safety (must resolve cleanly without throwing even without network)
+const webhookRes = await dispatchEscalationWebhook({
+  customer: '628123456789',
+  issue: 'Test alert notification',
+  reason: 'TEST_ALERT',
+  severity: 'HIGH'
+});
+assert.strictEqual(webhookRes, true, 'Webhook dispatch should gracefully resolve to true');
 
 console.log('✅ [PASS] All crisis and escalation tests passed.');

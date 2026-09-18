@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import axios from 'axios';
 import config from '../config/index.js';
 
 const LOG_FILE = path.resolve(process.cwd(), 'unanswered_queries.json');
@@ -148,11 +149,87 @@ On-call human support must review and contact the customer immediately.
     await sock.sendMessage(config.bot.hotlineJid, { text: ticketPayload });
     recordEscalationDispatch(cleanPhone);
     console.log(`[ESCALATION] Tier 4 Emergency Ticket successfully dispatched to ${config.bot.hotlineJid} for customer ${cleanPhone}`);
+
+    // Fire external webhook / telegram dispatch in background
+    dispatchEscalationWebhook({
+      customer: cleanPhone,
+      issue: substantiveIssue,
+      reason: 'CRITICAL_CRISIS',
+      severity: 'CRITICAL'
+    }).catch(() => {});
+
     return true;
   } catch (err) {
     console.error('[ESCALATION] Failed to dispatch emergency ticket:', err.message);
     return false;
   }
+}
+
+export async function dispatchEscalationWebhook(data = {}) {
+  const { customer, issue, reason = 'ESCALATION', severity = 'HIGH', timestamp = new Date().toISOString() } = data;
+  const webhookUrl = config.escalation?.webhookUrl || process.env.ESCALATION_WEBHOOK_URL;
+  const tgToken = config.escalation?.telegramBotToken || process.env.TELEGRAM_BOT_TOKEN;
+  const tgChatId = config.escalation?.telegramChatId || process.env.TELEGRAM_CHAT_ID;
+
+  const tasks = [];
+
+  if (webhookUrl) {
+    tasks.push((async () => {
+      try {
+        if (webhookUrl.includes('discord.com/api/webhooks')) {
+          await axios.post(webhookUrl, {
+            username: 'OmniWA Escalation Bot',
+            embeds: [{
+              title: `🚨 Escalation Alert [${severity}]`,
+              color: severity === 'CRITICAL' ? 15158332 : 3447003,
+              fields: [
+                { name: 'Customer', value: customer || 'Unknown', inline: true },
+                { name: 'Reason', value: reason, inline: true },
+                { name: 'Issue / Complaint', value: (issue || 'No details').substring(0, 1000) },
+                { name: 'WhatsApp Direct Link', value: customer ? `https://wa.me/${customer}` : 'N/A' }
+              ],
+              timestamp
+            }]
+          }, { timeout: 4000 });
+        } else {
+          // Generic Webhook payload (Slack / n8n / custom HTTP service)
+          await axios.post(webhookUrl, {
+            event: 'ESCALATION_ALERT',
+            severity,
+            customer,
+            reason,
+            issue,
+            timestamp
+          }, { timeout: 4000 });
+        }
+      } catch (err) {
+        console.warn(`[WEBHOOK] Failed to dispatch escalation webhook: ${err.message}`);
+      }
+    })());
+  }
+
+  if (tgToken && tgChatId) {
+    tasks.push((async () => {
+      try {
+        const text = `🚨 *[OMNIWA ESCALATION ALERT]*\n` +
+          `*Severity:* ${severity}\n` +
+          `*Customer:* \`${customer || 'Unknown'}\`\n` +
+          `*Reason:* ${reason}\n` +
+          `*Issue:* "${issue || 'N/A'}"\n` +
+          `*WhatsApp:* https://wa.me/${customer}`;
+        await axios.post(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
+          chat_id: tgChatId,
+          text,
+          parse_mode: 'Markdown'
+        }, { timeout: 4000 });
+      } catch (err) {
+        console.warn(`[TELEGRAM ALERT] Failed to dispatch telegram alert: ${err.message}`);
+      }
+    })());
+  }
+
+  await Promise.allSettled(tasks);
+  return true;
 }
 
 export default {
@@ -162,5 +239,6 @@ export default {
   recordEscalationDispatch,
   extractOriginalIssue,
   logUnansweredQuery,
-  dispatchTier4Emergency
+  dispatchTier4Emergency,
+  dispatchEscalationWebhook
 };

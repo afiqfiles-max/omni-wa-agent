@@ -1,13 +1,14 @@
-# ⚡ OmniWA-Agent
+<p align="center">
+  <img src="assets/banner.svg" alt="OmniWA-Agent Banner" width="100%" />
+</p>
 
-> **Autonomous, Universal & Multilingual WhatsApp AI Customer Support & Sales Agent.**  
-> Powered by Whisper, Baileys WebSockets, ChromaDB Vector RAG, and OpenAI-Compatible LLMs.
-
-[![Node Version](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen.svg)](https://nodejs.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://www.docker.com/)
-[![ChromaDB](https://img.shields.io/badge/VectorDB-ChromaDB-purple.svg)](https://trychroma.com)
-[![Baileys](https://img.shields.io/badge/WhatsApp-WhiskeySockets%2FBaileys-emerald.svg)](https://github.com/WhiskeySockets/Baileys)
+<p align="center">
+  <a href="https://nodejs.org"><img src="https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen.svg" alt="Node Version" /></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
+  <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/docker-ready-blue.svg" alt="Docker Ready" /></a>
+  <a href="https://trychroma.com"><img src="https://img.shields.io/badge/VectorDB-ChromaDB-purple.svg" alt="VectorDB: ChromaDB" /></a>
+  <a href="https://github.com/WhiskeySockets/Baileys"><img src="https://img.shields.io/badge/WhatsApp-WhiskeySockets%2FBaileys-emerald.svg" alt="Baileys WebSocket" /></a>
+</p>
 
 ---
 
@@ -163,6 +164,43 @@ npm test
 
 ---
 
+## 🖥️ Built-in PWA Admin Console & Interactive Sandbox
+
+Manage and test your WhatsApp agent in real-time via the built-in PWA Admin Console (`http://localhost:3001/admin`):
+
+```text
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ⚡ OMNIWA AGENT — REAL-TIME PWA CONTROL CONSOLE                             │
+├───────────────────────┬────────────────────────────┬────────────────────────┤
+│ 🟢 ENGINE: ONLINE     │ 💾 MEMORY: ~52 MB / 1 GB   │ 👥 SESSIONS: ACTIVE    │
+├───────────────────────┴────────────────────────────┴────────────────────────┤
+│ [ QR Code Live Sync ]   [ Live RAG Query Sandbox ]  [ ITIL Escalations (0) ]│
+│  Instant QR stream       Simulate chat in browser    Real-time triage audit │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+- **Live QR Streaming:** Direct browser-based WhatsApp pairing without terminal inspection.
+- **Interactive RAG Sandbox:** Test questions, verify semantic chunk retrieval, and observe system prompt calibration.
+- **Unanswered Query Audit:** Review unresolved questions and single-click update your documentation.
+
+---
+
+## 🔔 Multi-Channel Escalation Alerts (Discord, Telegram, Slack)
+
+When critical emergencies (fraud, system outages, safety incidents) or explicit human staff requests occur, OmniWA-Agent can immediately dispatch real-time alerts across your team's communication channels:
+
+```bash
+# In your .env file:
+# Discord Webhook
+ESCALATION_WEBHOOK_URL=https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_TOKEN
+
+# Or Telegram Bot
+TELEGRAM_BOT_TOKEN=123456789:ABCdefGhIJKlmNoPQRstuvWXyz
+TELEGRAM_CHAT_ID=-1001234567890
+```
+
+---
+
 ## 🛡️ Production Anti-Ban & Maintenance
 
 - **Automatic Reconnection:** Handles network dropouts (Error 408/515) without deleting the `auth_info/` directory, preventing the dreaded "QR Rescan Loop".
@@ -178,12 +216,16 @@ npm test
 
 ---
 
-## 📄 License
+## 🤝 Contributing & Community
 
-Distributed under the **MIT License**. See `LICENSE` for more information.
+We welcome contributions from developers worldwide! Please review our guidelines before submitting a PR:
+
+- 📖 **[Contributing Guide](CONTRIBUTING.md)**: Setup, coding standards, and PR workflows.
+- 📜 **[Code of Conduct](CODE_OF_CONDUCT.md)**: Our pledge and standards.
+- 🐛 **[Issue Tracker](https://github.com/afiqfiles-max/omni-wa-agent/issues)**: Report bugs or request features.
 
 ---
 
-## 🤝 Contributing
+## 📄 License
 
-Contributions, feature requests, and bug reports are welcome! Feel free to open an issue or submit a Pull Request.
+Distributed under the **MIT License**. See `LICENSE` for more information.
