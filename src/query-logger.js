@@ -82,7 +82,7 @@ export function extractOriginalIssue(history, currentQuery) {
 export function logUnansweredQuery(query, reason = 'LOW_CONFIDENCE', phone = 'UNKNOWN', history = []) {
   try {
     let logs = [];
-    if (fs.existsSync(LOG_FILE)) {
+    if (fs.existsSync(LOG_FILE) && fs.statSync(LOG_FILE).isFile()) {
       try {
         logs = JSON.parse(fs.readFileSync(LOG_FILE, 'utf-8'));
         if (!Array.isArray(logs)) logs = [];

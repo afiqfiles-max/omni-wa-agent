@@ -59,7 +59,7 @@ app.get('/api/status', async (req, res) => {
 
   let unansweredCount = 0;
   const logFile = path.resolve(process.cwd(), 'unanswered_queries.json');
-  if (fs.existsSync(logFile)) {
+  if (fs.existsSync(logFile) && fs.statSync(logFile).isFile()) {
     try {
       const logs = JSON.parse(fs.readFileSync(logFile, 'utf-8'));
       unansweredCount = Array.isArray(logs) ? logs.filter(l => l.status === 'PENDING').length : 0;
@@ -108,7 +108,7 @@ app.post('/api/ingest', async (req, res) => {
 
 app.get('/api/unanswered', (req, res) => {
   const logFile = path.resolve(process.cwd(), 'unanswered_queries.json');
-  if (fs.existsSync(logFile)) {
+  if (fs.existsSync(logFile) && fs.statSync(logFile).isFile()) {
     try {
       const logs = JSON.parse(fs.readFileSync(logFile, 'utf-8'));
       return res.json(Array.isArray(logs) ? logs : []);

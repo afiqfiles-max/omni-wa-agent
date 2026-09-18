@@ -16,7 +16,6 @@ services:
     volumes:
       - ./auth_info:/app/auth_info
       - ./knowledge_base:/app/knowledge_base
-      - ./unanswered_queries.json:/app/unanswered_queries.json
     depends_on:
       - chromadb
 
