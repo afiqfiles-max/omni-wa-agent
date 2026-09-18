@@ -1,0 +1,29 @@
+name: Bug report
+description: Create a report to help us improve OmniWA-Agent
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to report a bug!
+  - type: input
+    id: version
+    attributes:
+      label: OmniWA-Agent Version
+      description: What version of OmniWA-Agent are you running?
+      placeholder: "e.g. 1.0.0"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Terminal Logs
+      description: Copy relevant logs from your console.
+      render: shell

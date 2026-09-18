@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmniWA-Agent Admin Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="manifest" href="/manifest.json">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#1e1b4b'
+            },
+            surface: {
+              900: '#08090a',
+              800: '#0f1115',
+              700: '#181b22',
+              600: '#222631'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #08090a; color: #f1f5f9; font-family: ui-sans-serif, system-ui, sans-serif; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #2a2f3d; border-radius: 4px; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+  <!-- Top Navbar -->
+  <header class="h-16 border-b border-surface-700 bg-surface-800/80 backdrop-blur sticky top-0 z-40 px-6 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold shadow-lg shadow-brand-500/20">
+        Ω
+      </div>
+      <div>
+        <h1 class="text-base font-semibold text-white tracking-wide">OmniWA-Agent <span class="text-xs text-brand-500 px-2 py-0.5 rounded-full bg-brand-500/10 font-mono">v1.0.0</span></h1>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <div id="statusBadge" class="flex items-center gap-2 text-xs px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
+        <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span>
+        <span id="statusText">Connecting...</span>
+      </div>
+      <button onclick="refreshData()" class="p-2 rounded-lg bg-surface-700 hover:bg-surface-600 text-slate-300 transition text-sm flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Grid -->
+  <div class="flex-1 flex overflow-hidden">
+    <!-- Sidebar -->
+    <aside class="w-60 border-r border-surface-700 bg-surface-800/50 p-4 flex flex-col gap-1">
+      <button onclick="switchTab('overview')" id="tabBtn-overview" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-3 bg-brand-600/10 text-brand-400 border border-brand-500/20">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Overview & Metrics
+      </button>
+      <button onclick="switchTab('sandbox')" id="tabBtn-sandbox" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-3 text-slate-400 hover:text-slate-200 hover:bg-surface-700 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        AI Testing Sandbox
+      </button>
+      <button onclick="switchTab('unanswered')" id="tabBtn-unanswered" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-3 text-slate-400 hover:text-slate-200 hover:bg-surface-700 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        Unresolved Queries
+      </button>
+      <button onclick="switchTab('qr')" id="tabBtn-qr" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-3 text-slate-400 hover:text-slate-200 hover:bg-surface-700 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+        WhatsApp Pairing
+      </button>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto custom-scrollbar p-8">
+      <!-- Tab 1: Overview -->
+      <section id="tab-overview" class="space-y-6">
+        <div>
+          <h2 class="text-xl font-bold text-white">System Health & Telemetry</h2>
+          <p class="text-sm text-slate-400 mt-1">Real-time status of Baileys socket, vector search, and active conversations.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="p-5 rounded-xl bg-surface-800 border border-surface-700">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Bot Status</span>
+            <div id="statStatus" class="text-2xl font-bold text-white mt-2">Checking...</div>
+          </div>
+          <div class="p-5 rounded-xl bg-surface-800 border border-surface-700">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Sessions</span>
+            <div id="statSessions" class="text-2xl font-bold text-brand-400 mt-2">0</div>
+          </div>
+          <div class="p-5 rounded-xl bg-surface-800 border border-surface-700">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">KB Chunks</span>
+            <div id="statChunks" class="text-2xl font-bold text-emerald-400 mt-2">--</div>
+          </div>
+          <div class="p-5 rounded-xl bg-surface-800 border border-surface-700">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Unresolved Audit</span>
+            <div id="statUnanswered" class="text-2xl font-bold text-amber-400 mt-2">0</div>
+          </div>
+        </div>
+
+        <!-- Quick Ingest Action -->
+        <div class="p-6 rounded-xl bg-surface-800 border border-surface-700 flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-semibold text-white">Re-Index Knowledge Base</h3>
+            <p class="text-sm text-slate-400 mt-1">Re-chunk and reload all Markdown documents into ChromaDB vector store.</p>
+          </div>
+          <button onclick="triggerIngest()" id="btnIngest" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm font-medium transition flex items-center gap-2">
+            Re-index Docs
+          </button>
+        </div>
+      </section>
+
+      <!-- Tab 2: Sandbox -->
+      <section id="tab-sandbox" class="hidden space-y-6">
+        <div>
+          <h2 class="text-xl font-bold text-white">Interactive RAG Testing Sandbox</h2>
+          <p class="text-sm text-slate-400 mt-1">Test queries and verify retrieval context before production WhatsApp messaging.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="space-y-4">
+            <div class="p-5 rounded-xl bg-surface-800 border border-surface-700 space-y-4">
+              <label class="block text-sm font-medium text-slate-300">Test Query (Simulated Customer Input):</label>
+              <textarea id="sandboxInput" rows="4" class="w-full bg-surface-900 border border-surface-600 rounded-lg p-3 text-sm text-slate-100 focus:outline-none focus:border-brand-500" placeholder="e.g., Berapa biaya paket pro bulanan? or How much is the enterprise plan?"></textarea>
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-slate-400">Normalizer and RAG vector search are executed automatically.</span>
+                <button onclick="executeSandboxTest()" id="btnTest" class="px-5 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm font-medium transition">
+                  Run Query
+                </button>
+              </div>
+            </div>
+
+            <!-- Normalized Result -->
+            <div class="p-4 rounded-xl bg-surface-800 border border-surface-700">
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Normalized Query Output:</span>
+              <div id="sandboxNormalized" class="text-sm font-mono text-emerald-400 mt-2 italic">(none)</div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <!-- Simulated Bot Response -->
+            <div class="p-5 rounded-xl bg-surface-800 border border-surface-700 space-y-3">
+              <span class="text-xs font-semibold text-brand-400 uppercase tracking-wider">Simulated WhatsApp Response:</span>
+              <div id="sandboxOutput" class="text-sm text-slate-200 leading-relaxed whitespace-pre-line min-h-[120px] bg-surface-900/60 p-4 rounded-lg border border-surface-700">
+                Ready to test. Enter a query on the left and click "Run Query".
+              </div>
+            </div>
+
+            <!-- Retrieved Chunks -->
+            <div class="p-5 rounded-xl bg-surface-800 border border-surface-700 space-y-3">
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Retrieved Context Chunks (Top-3):</span>
+              <div id="sandboxChunks" class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar text-xs text-slate-300">
+                <span class="text-slate-500 italic">No search performed yet.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 3: Unanswered Queries -->
+      <section id="tab-unanswered" class="hidden space-y-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-xl font-bold text-white">Unresolved Queries Audit Log</h2>
+            <p class="text-sm text-slate-400 mt-1">Queries where documentation was lacking or confidence was low, flagged for content team review.</p>
+          </div>
+          <button onclick="clearResolvedLogs()" class="px-3 py-1.5 rounded-lg bg-surface-700 hover:bg-surface-600 text-slate-300 text-xs transition">
+            Clear Resolved
+          </button>
+        </div>
+
+        <div class="rounded-xl border border-surface-700 bg-surface-800 overflow-hidden">
+          <table class="w-full text-left text-sm text-slate-300">
+            <thead class="bg-surface-700/60 text-xs uppercase text-slate-400">
+              <tr>
+                <th class="px-4 py-3">Timestamp</th>
+                <th class="px-4 py-3">Phone</th>
+                <th class="px-4 py-3">Customer Query</th>
+                <th class="px-4 py-3">Reason</th>
+                <th class="px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody id="unansweredTableBody" class="divide-y divide-surface-700">
+              <tr>
+                <td colspan="5" class="px-4 py-6 text-center text-slate-500 italic">No unanswered queries recorded yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Tab 4: QR Code & Pairing -->
+      <section id="tab-qr" class="hidden space-y-6">
+        <div>
+          <h2 class="text-xl font-bold text-white">WhatsApp Device Pairing</h2>
+          <p class="text-sm text-slate-400 mt-1">Scan the QR code with WhatsApp on your phone (Linked Devices) to authenticate the bot.</p>
+        </div>
+
+        <div class="max-w-md p-8 rounded-xl bg-surface-800 border border-surface-700 text-center space-y-4">
+          <div id="qrContainer" class="w-64 h-64 mx-auto bg-white rounded-lg flex items-center justify-center p-4">
+            <span class="text-slate-400 text-sm italic">Waiting for QR stream...</span>
+          </div>
+          <p class="text-xs text-slate-400">QR refreshes automatically every 20 seconds until connected.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function switchTab(tabId) {
+      ['overview', 'sandbox', 'unanswered', 'qr'].forEach(t => {
+        const sec = document.getElementById(`tab-${t}`);
+        const btn = document.getElementById(`tabBtn-${t}`);
+        if (t === tabId) {
+          sec.classList.remove('hidden');
+          btn.className = 'tab-btn w-full text-left px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-3 bg-brand-600/10 text-brand-400 border border-brand-500/20';
+        } else {
+          sec.classList.add('hidden');
+          btn.className = 'tab-btn w-full text-left px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-3 text-slate-400 hover:text-slate-200 hover:bg-surface-700 transition';
+        }
+      });
+    }
+
+    async function refreshData() {
+      try {
+        const res = await fetch('/api/status');
+        const data = await res.json();
+        
+        const badge = document.getElementById('statusBadge');
+        const text = document.getElementById('statusText');
+        const statStatus = document.getElementById('statStatus');
+        
+        if (data.connected) {
+          badge.className = 'flex items-center gap-2 text-xs px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span><span>Connected</span>';
+          statStatus.innerText = 'Connected';
+          statStatus.className = 'text-2xl font-bold text-emerald-400 mt-2';
+        } else {
+          badge.className = 'flex items-center gap-2 text-xs px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20';
+          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span><span>Awaiting QR</span>';
+          statStatus.innerText = 'Awaiting QR';
+          statStatus.className = 'text-2xl font-bold text-yellow-400 mt-2';
+        }
+
+        document.getElementById('statSessions').innerText = data.activeSessions || 0;
+        document.getElementById('statChunks').innerText = data.kbChunks || '--';
+        document.getElementById('statUnanswered').innerText = data.unansweredCount || 0;
+
+        if (data.qrCode) {
+          document.getElementById('qrContainer').innerHTML = `<img src="${data.qrCode}" alt="QR Code" class="w-full h-full object-contain" />`;
+        }
+
+        loadUnanswered();
+      } catch (err) {
+        console.warn('Refresh error:', err);
+      }
+    }
+
+    async function loadUnanswered() {
+      try {
+        const res = await fetch('/api/unanswered');
+        const items = await res.json();
+        const tbody = document.getElementById('unansweredTableBody');
+
+        if (!items || items.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-6 text-center text-slate-500 italic">No unanswered queries recorded yet.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = items.map(item => `
+          <tr class="hover:bg-surface-700/30">
+            <td class="px-4 py-3 text-xs text-slate-400">${new Date(item.timestamp).toLocaleString()}</td>
+            <td class="px-4 py-3 font-mono text-xs text-slate-300">${item.phone || '-'}</td>
+            <td class="px-4 py-3 text-slate-100 font-medium">${item.query}</td>
+            <td class="px-4 py-3 text-xs text-amber-400">${item.reason}</td>
+            <td class="px-4 py-3 text-xs">
+              <span class="px-2 py-0.5 rounded-full ${item.status === 'RESOLVED' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}">
+                ${item.status}
+              </span>
+            </td>
+          </tr>
+        `).join('');
+      } catch (e) {}
+    }
+
+    async function triggerIngest() {
+      const btn = document.getElementById('btnIngest');
+      btn.disabled = true;
+      btn.innerText = 'Indexing...';
+      try {
+        const res = await fetch('/api/ingest', { method: 'POST' });
+        const data = await res.json();
+        alert(`Indexing complete! ${data.chunksIndexed} chunks loaded.`);
+        refreshData();
+      } catch (err) {
+        alert('Indexing failed: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Re-index Docs';
+      }
+    }
+
+    async function executeSandboxTest() {
+      const q = document.getElementById('sandboxInput').value.trim();
+      if (!q) return;
+
+      const btn = document.getElementById('btnTest');
+      btn.disabled = true;
+      btn.innerText = 'Testing...';
+
+      document.getElementById('sandboxOutput').innerText = 'Generating response...';
+      document.getElementById('sandboxChunks').innerHTML = 'Retrieving vector context...';
+
+      try {
+        const res = await fetch('/api/sandbox', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q })
+        });
+        const data = await res.json();
+
+        document.getElementById('sandboxNormalized').innerText = data.normalized || q;
+        document.getElementById('sandboxOutput').innerText = data.answer || '(No answer generated)';
+
+        if (data.context && data.context.length > 0) {
+          document.getElementById('sandboxChunks').innerHTML = data.context.map((c, i) => `
+            <div class="p-3 bg-surface-900 rounded-lg border border-surface-700">
+              <div class="font-semibold text-brand-400">[#${i+1}] ${c.metadata?.file || 'Document'} - ${c.metadata?.section || 'General'}</div>
+              <p class="mt-1 text-slate-300 whitespace-pre-line">${c.text.substring(0, 300)}...</p>
+            </div>
+          `).join('');
+        } else {
+          document.getElementById('sandboxChunks').innerHTML = '<span class="text-slate-500 italic">No context chunks matched.</span>';
+        }
+      } catch (err) {
+        document.getElementById('sandboxOutput').innerText = 'Error: ' + err.message;
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Run Query';
+      }
+    }
+
+    // Auto-poll status
+    refreshData();
+    setInterval(refreshData, 10000);
+  </script>
+</body>
+</html>

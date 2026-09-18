@@ -1,0 +1,40 @@
+{
+  "name": "omni-wa-agent",
+  "version": "1.0.0",
+  "description": "Production-ready, multi-tenant & multilingual WhatsApp AI Customer Support & Sales Agent powered by Baileys, ChromaDB, and OpenAI-compatible LLMs.",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node tests/test-all.js",
+    "ingest": "node -e \"import('./src/rag.js').then(m => m.ingestDocs())\"",
+    "doctor": "node src/doctor.js"
+  },
+  "keywords": [
+    "whatsapp",
+    "ai-agent",
+    "rag",
+    "customer-service",
+    "baileys",
+    "chromadb",
+    "llm",
+    "multilingual",
+    "anti-ban",
+    "itil-escalation"
+  ],
+  "author": "Afiq <afiq.files@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@chroma-core/default-embed": "^0.1.9",
+    "@whiskeysockets/baileys": "^7.0.0-rc14",
+    "axios": "^1.7.9",
+    "chromadb": "^3.5.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "pino": "^9.6.0",
+    "qrcode": "^1.5.4",
+    "qrcode-terminal": "^0.12.0",
+    "xlsx": "^0.18.5"
+  }
+}
