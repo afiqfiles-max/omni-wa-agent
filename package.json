@@ -1,7 +1,7 @@
 {
   "name": "omni-wa-agent",
   "version": "1.0.0",
-  "description": "Production-ready, multi-tenant & multilingual WhatsApp AI Customer Support & Sales Agent powered by Baileys, ChromaDB, and OpenAI-compatible LLMs.",
+  "description": "Headless WhatsApp AI customer support & conversational triage runtime powered by Baileys WebSockets, ChromaDB vector RAG, and Gaussian keystroke pacing.",
   "type": "module",
   "main": "src/index.js",
   "scripts": {
