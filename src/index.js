@@ -12,7 +12,7 @@ import makeWASocket, {
 import config from '../config/index.js';
 import { normalizeQuery } from './normalizer.js';
 import { sessionManager } from './session.js';
-import { isChitchatOrGreeting, condenseQuery } from './smart-router.js';
+import { isChitchatOrGreeting, isBotMetadataProbe, condenseQuery } from './smart-router.js';
 import { searchDocs, ingestDocs, getCollection } from './rag.js';
 import { generateAnswer, callInternalLLM } from './ai.js';
 import {
@@ -218,7 +218,21 @@ async function handleInboundMessage(sock, msg) {
       return;
     }
 
-    // 4. Check for pure Chitchat / Greeting (Bypass heavy vector search)
+    // 4. Check for Technical Probes & Bot Building Tutorials (Zero-Latency Security Guard)
+    if (isBotMetadataProbe(rawQuery)) {
+      const isId = /(?:bikin|buat|gimana|bagaimana|kamu|anda|apa|koding|codingan|kayak|seperti|bisa|tolong|ajarin|sistem|aplikasi)/i.test(rawQuery);
+      const probeReply = isId
+        ? `Halo! Saya *${config.bot.name}*, asisten virtual resmi dari *${config.bot.organization}*.\n\nMohon maaf, saya didedikasikan khusus untuk membantu pertanyaan dan layanan seputar produk/layanan kami, sehingga tidak dapat membagikan informasi teknis sistem, arsitektur internal, maupun panduan/tutorial pembuatan bot.\n\nApakah ada hal seputar layanan *${config.bot.organization}* yang bisa saya bantu?`
+        : `Hello! I am *${config.bot.name}*, the official virtual assistant for *${config.bot.organization}*.\n\nPlease note that my role is strictly dedicated to assisting customers with our services and support. I cannot provide internal system architecture details, technical tutorials, or bot development guides.\n\nIs there anything regarding *${config.bot.organization}*'s services I can help you with?`;
+
+      await simulateHumanTyping(sock, remoteJid, probeReply.length);
+      await sock.sendMessage(remoteJid, { text: probeReply }, { quoted: msg });
+      sessionManager.addInteraction(remoteJid, 'user', rawQuery);
+      sessionManager.addInteraction(remoteJid, 'assistant', probeReply);
+      return;
+    }
+
+    // 5. Check for pure Chitchat / Greeting (Bypass heavy vector search)
     if (isChitchatOrGreeting(rawQuery) && history.length === 0) {
       const greetingReply = `Hello! I am *${config.bot.name}*, the automated assistant for *${config.bot.organization}*.\n\nHow may I help you today? You can ask me about our services, pricing, technical documentation, or support policies.`;
       await simulateHumanTyping(sock, remoteJid, greetingReply.length);

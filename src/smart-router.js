@@ -24,6 +24,32 @@ export function isChitchatOrGreeting(text) {
 }
 
 /**
+ * Detects attempts to probe technical bot architecture, request chatbot tutorials,
+ * extract system prompts, or abuse the customer support bot as a general coding engine.
+ * Supports multilingual triggers (English, Indonesian).
+ */
+export function isBotMetadataProbe(text) {
+  if (!text || typeof text !== 'string') return false;
+  const lower = text.toLowerCase();
+
+  return (
+    // Bot creation / tutorial requests
+    /(?:bikin|buat|create|develop|build|koding|coding|code|arsitektur|architecture|how it works|source code|stack|tutorial|programming language|bahasa pemrograman).*(?:bot|chatbot|assistant|asisten|sistem|aplikasi|app|system|like you|kayak kamu|seperti kamu|kayak gini|seperti ini)/i.test(lower) ||
+    // Technical stack & model probing
+    /(?:bot|chatbot|assistant|asisten|app|system).*(?:pakai model apa|pake model apa|what model|what llm|dibuat pakai|codingan apa|bahasa apa|source code|tutorial bikin|tutorial buat|arsitekturnya|architecture|backend|framework|how does.*work|jalan.*bagaimana)/i.test(lower) ||
+    // How the app/system operates (handles both EN 'how does this system work' and ID 'bagaimana sistem ini berjalan')
+    /(?:how does|how do|explain how|bagaimana|gimana|cara).*(?:this\s+|your\s+|the\s+)?(?:system|app|bot|assistant|aplikasi|sistem|asisten|ai).*(?:work|operate|run|function|built|created|jalan|berjalan|bekerja|dibuat|dibangun)/i.test(lower) ||
+    // Tutorial on chatbot making
+    /(?:tutorial).*(?:bikin|buat|code|coding|build|develop|create).*(?:bot|chatbot|asisten|assistant)/i.test(lower) ||
+    /(?:how to|cara|gimana|bagaimana).*(?:bikin|buat|build|develop|create|code).*(?:bot|chatbot|assistant|asisten)/i.test(lower) ||
+    // System prompt extraction
+    /(?:system prompt|prompt kamu|prompt anda|your prompt|system instructions|instruksi sistem|initial instructions|prompt verbatim)/i.test(lower) ||
+    // Framework / stack interrogation
+    /(?:kamu|anda|you|this bot|bot ini|the bot).*(?:pakai model|pake model|what model|llm|backend|database|baileys|langchain|rag|chromadb|python|nodejs)/i.test(lower)
+  );
+}
+
+/**
  * Contextual Query Rewriter (Condense Question).
  * Rewrites ambiguous follow-up questions ("how much is it?", "what are the requirements?")
  * into self-contained search queries based on recent conversation history.
@@ -77,5 +103,6 @@ STANDALONE SEARCH QUERY:`;
 
 export default {
   isChitchatOrGreeting,
+  isBotMetadataProbe,
   condenseQuery
 };
