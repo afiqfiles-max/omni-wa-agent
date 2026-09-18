@@ -1,7 +1,6 @@
 services:
   omni-wa-agent:
     build: .
-    container_name: omni-wa-agent
     restart: unless-stopped
     ports:
       - "${PORT:-3001}:3001"
@@ -21,7 +20,6 @@ services:
 
   chromadb:
     image: chromadb/chroma:latest
-    container_name: omni-wa-chromadb
     restart: unless-stopped
     ports:
       - "${CHROMA_PORT:-8000}:8000"
