@@ -3,7 +3,7 @@
 > **Autonomous, Universal & Multilingual WhatsApp AI Customer Support & Sales Agent.**  
 > Powered by Whisper, Baileys WebSockets, ChromaDB Vector RAG, and OpenAI-Compatible LLMs.
 
-[![Node Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org)
+[![Node Version](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen.svg)](https://nodejs.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://www.docker.com/)
 [![ChromaDB](https://img.shields.io/badge/VectorDB-ChromaDB-purple.svg)](https://trychroma.com)
@@ -87,7 +87,7 @@ flowchart TD
 ### Option B: Native Node.js Setup
 
 #### 1. Prerequisites
-- **Node.js** >= 18.0.0
+- **Node.js** >= 20.0.0 (LTS recommended)
 - **ChromaDB** running locally on port 8000:
   ```bash
   docker run -d -p 8000:8000 --name chromadb chromadb/chroma:latest

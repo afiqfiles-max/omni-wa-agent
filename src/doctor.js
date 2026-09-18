@@ -12,10 +12,10 @@ let issues = 0;
 async function checkNodeVersion() {
   const current = process.version;
   const major = parseInt(current.slice(1).split('.')[0], 10);
-  if (major >= 18) {
-    console.log(`[PASS] Node.js Version: ${current} (>= v18 supported)`);
+  if (major >= 20) {
+    console.log(`[PASS] Node.js Version: ${current} (>= v20 LTS supported)`);
   } else {
-    console.error(`[FAIL] Node.js Version: ${current}. Requires Node.js v18 or newer.`);
+    console.error(`[FAIL] Node.js Version: ${current}. Requires Node.js v20 LTS or newer.`);
     issues++;
   }
 }
