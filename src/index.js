@@ -82,6 +82,21 @@ app.post('/api/sandbox', async (req, res) => {
   const { query } = req.body;
   if (!query) return res.status(400).json({ error: 'Query required' });
 
+  // Check for technical probes & bot building tutorials (Zero-Latency Security Guard)
+  if (isBotMetadataProbe(query)) {
+    const isId = /(?:bikin|buat|gimana|bagaimana|kamu|anda|apa|koding|codingan|kayak|seperti|bisa|tolong|ajarin|sistem|aplikasi)/i.test(query);
+    const probeReply = isId
+      ? `Halo! Saya *${config.bot.name}*, asisten virtual resmi dari *${config.bot.organization}*.\n\nMohon maaf, saya didedikasikan khusus untuk membantu pertanyaan dan layanan seputar produk/layanan kami, sehingga tidak dapat membagikan informasi teknis sistem, arsitektur internal, maupun panduan/tutorial pembuatan bot.\n\nApakah ada hal seputar layanan *${config.bot.organization}* yang bisa saya bantu?`
+      : `Hello! I am *${config.bot.name}*, the official virtual assistant for *${config.bot.organization}*.\n\nPlease note that my role is strictly dedicated to assisting customers with our services and support. I cannot provide internal system architecture details, technical tutorials, or bot development guides.\n\nIs there anything regarding *${config.bot.organization}*'s services I can help you with?`;
+
+    return res.json({
+      original: query,
+      normalized: 'N/A (Bot probe guard triggered)',
+      context: [],
+      answer: probeReply
+    });
+  }
+
   try {
     const normalized = normalizeQuery(query);
     const chunks = await searchDocs(normalized, 3);
