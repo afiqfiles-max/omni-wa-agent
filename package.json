@@ -1,6 +1,6 @@
 {
   "name": "omni-wa-agent",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Headless WhatsApp AI customer support & conversational triage runtime powered by Baileys WebSockets, ChromaDB vector RAG, and Gaussian keystroke pacing.",
   "type": "module",
   "main": "src/index.js",
